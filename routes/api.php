@@ -14,5 +14,5 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/', [\App\Http\Controllers\TelegramBotController::class, 'start']);
+Route::post('/start', [\App\Http\Controllers\TelegramBotController::class, 'start']);
 
