@@ -18,7 +18,7 @@ class TelegramBotController extends Controller
         $keyb = $telegram->buildInlineKeyBoard($option);
         $content = array('chat_id' => $chat_id, 'reply_markup' => $keyb, 'text' => "❌ Kechirasiz botimizdan foydalanishdan oldin ushbu kanallarga a'zo bo'lishingiz kerak.");
         $telegram->sendMessage($content);
-        $content = array('chat_id' => $chat_id, 'text' => json_encode($result, JSON_UNESCAPED_UNICODE));
-        $telegram->sendMessage($content);
+        $x = array('chat_id' => $chat_id, 'text' => json_encode($result, JSON_UNESCAPED_UNICODE));
+        $telegram->sendMessage($x);
     }
 }
