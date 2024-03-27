@@ -19,14 +19,15 @@ class TelegramBotController extends Controller
                 $content = array('chat_id' => $chat_id, 'text' => "Tekshirilmoqda....");
                 $telegram->sendMessage($content);
             }
+        } else {
+            $option = array(
+                array($telegram->buildInlineKeyBoardButton("1 - kanal", $url= "https://t.me/+Z9QnOES4AkphNGYy"), $telegram->buildInlineKeyBoardButton("2 - kanal", $url= "https://t.me/orifjon_orifov"), $telegram->buildInlineKeyBoardButton("Tekshirish ✅", "", "check"))
+            );
+
+            $keyb = $telegram->buildInlineKeyBoard($option);
+            $content = array('chat_id' => $chat_id, 'reply_markup' => $keyb, 'text' => "❌ Kechirasiz botimizdan foydalanishdan oldin ushbu kanallarga a'zo bo'lishingiz kerak.");
+            $telegram->sendMessage($content);
         }
 
-        $option = array(
-            array($telegram->buildInlineKeyBoardButton("1 - kanal", $url= "https://t.me/+Z9QnOES4AkphNGYy"), $telegram->buildInlineKeyBoardButton("2 - kanal", $url= "https://t.me/orifjon_orifov"), $telegram->buildInlineKeyBoardButton("Tekshirish ✅", "", "check"))
-        );
-
-        $keyb = $telegram->buildInlineKeyBoard($option);
-        $content = array('chat_id' => $chat_id, 'reply_markup' => $keyb, 'text' => "❌ Kechirasiz botimizdan foydalanishdan oldin ushbu kanallarga a'zo bo'lishingiz kerak.");
-        $telegram->sendMessage($content);
     }
 }

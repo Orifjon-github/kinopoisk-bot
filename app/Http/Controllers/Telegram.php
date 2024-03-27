@@ -916,7 +916,7 @@ class Telegram
      */
     public function Callback_Query()
     {
-        return $this->data['callback_query'];
+        return $this->data['callback_query'] ?? null;
     }
 
     /// Get the callback_query id of the current update
