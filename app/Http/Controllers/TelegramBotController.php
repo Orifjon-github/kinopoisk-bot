@@ -12,6 +12,10 @@ class TelegramBotController extends Controller
         $result = $telegram->getData();
         $chat_id = $telegram->ChatID();
         $callback_data = $telegram->Callback_Data();
+        if ($callback_data == 'check') {
+            $content = array('chat_id' => $chat_id, 'text' => "Tekshirilmoqda....");
+            $telegram->sendMessage($content);
+        }
         $option = array(
             array($telegram->buildInlineKeyBoardButton("1 - kanal", $url= "https://t.me/+Z9QnOES4AkphNGYy"), $telegram->buildInlineKeyBoardButton("2 - kanal", $url= "https://t.me/orifjon_orifov"), $telegram->buildInlineKeyBoardButton("Tekshirish ✅", "", "check"))
         );
@@ -19,7 +23,5 @@ class TelegramBotController extends Controller
         $keyb = $telegram->buildInlineKeyBoard($option);
         $content = array('chat_id' => $chat_id, 'reply_markup' => $keyb, 'text' => "❌ Kechirasiz botimizdan foydalanishdan oldin ushbu kanallarga a'zo bo'lishingiz kerak.");
         $telegram->sendMessage($content);
-        $x = array('chat_id' => $chat_id, 'text' => json_encode($callback_data, JSON_UNESCAPED_UNICODE));
-        $telegram->sendMessage($x);
     }
 }
