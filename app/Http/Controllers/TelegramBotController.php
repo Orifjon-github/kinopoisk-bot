@@ -22,7 +22,7 @@ class TelegramBotController extends Controller
                 $content2 = ["chat_id" => "-1001987932786", "user_id" => $user_id];
                 $result2 = $telegram->getChatMember($content2);
                 if ($result1["ok"] && $result2['ok']) {
-                    $telegram->sendMessage(['chat_id' => $chat_id, 'text' => "Botdan bemalol foydalanishingiz mumkin"]);
+                    $telegram->sendMessage(['chat_id' => $chat_id, 'text' => json_encode([$result1, $result2])]);
                     exit();
                 }
                 $this->error($telegram, $chat_id);
