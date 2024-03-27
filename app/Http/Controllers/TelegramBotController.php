@@ -12,7 +12,7 @@ class TelegramBotController extends Controller
         $result = $telegram->getData();
         $chat_id = $telegram->ChatID();
         $option = array(
-            array($telegram->buildInlineKeyBoardButton("1 - kanal", $url= "https://t.me/+Z9QnOES4AkphNGYy"), $telegram->buildInlineKeyBoardButton("2 - kanal", $url= "https://t.me/orifjon_orifov"), $telegram->buildInlineKeyBoardButton("Tekshirish ✅", $callback_data = "Tekshirish"))
+            array($telegram->buildInlineKeyBoardButton("1 - kanal", $url= "https://t.me/+Z9QnOES4AkphNGYy"), $telegram->buildInlineKeyBoardButton("2 - kanal", $url= "https://t.me/orifjon_orifov"), $telegram->buildInlineKeyBoardButton("Tekshirish ✅", "", "check"))
         );
 
         $keyb = $telegram->buildInlineKeyBoard($option);
