@@ -19,7 +19,7 @@ class TelegramBotController extends Controller
             if ($callback_data == 'check') {
                 $content = ["chat_id" => "-1001987932786", "user_id" => $user_id];
                 $result = $telegram->getChatMember($content);
-                $telegram->sendMessage(['chat_id' => $chat_id, 'text' => json_encode($result, JSON_UNESCAPED_UNICODE)]);
+                $telegram->sendMessage(['chat_id' => $chat_id, 'text' => json_encode($result, JSON_UNESCAPED_UNICODE) . " a"]);
             }
         } else {
             $option = array(
