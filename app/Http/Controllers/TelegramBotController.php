@@ -17,15 +17,13 @@ class TelegramBotController extends Controller
         if (!empty($callback_query)) {
             $callback_data = $telegram->Callback_Data();
             if ($callback_data == 'check') {
-                $content1 = ["chat_id" => "-1001987932786", "user_id" => $user_id];
+                $content1 = ["chat_id" => "-1002088735419", "user_id" => $user_id];
                 $result1 = $telegram->getChatMember($content1);
-                $content2 = ["chat_id" => "-1001987932786", "user_id" => $user_id];
+                $content2 = ["chat_id" => "-1002086187280", "user_id" => $user_id];
                 $result2 = $telegram->getChatMember($content2);
-                if ($result1["ok"] && $result2['ok']) {
-                    $telegram->sendMessage(['chat_id' => $chat_id, 'text' => json_encode([$result1, $result2])]);
-                    exit();
-                }
-                $this->error($telegram, $chat_id);
+                $telegram->sendMessage(['chat_id' => $chat_id, 'text' => json_encode([$result1, $result2])]);
+                exit();
+//                $this->error($telegram, $chat_id);
             }
         } else {
             $this->error($telegram, $chat_id);
@@ -34,7 +32,9 @@ class TelegramBotController extends Controller
 
     private function error(Telegram $telegram, $chat_id) {
         $option = array(
-            array($telegram->buildInlineKeyBoardButton("1 - kanal", $url= "https://t.me/+Z9QnOES4AkphNGYy"), $telegram->buildInlineKeyBoardButton("2 - kanal", $url= "https://t.me/orifjon_orifov"), $telegram->buildInlineKeyBoardButton("Tekshirish ✅", "", "check"))
+            array($telegram->buildInlineKeyBoardButton("1 - kanal", $url= "https://t.me/eudhdhdhdhdhddh")),
+            array($telegram->buildInlineKeyBoardButton("2 - kanal", $url= "https://t.me/+Svw6BvNlGU9hZmMy")),
+            array($telegram->buildInlineKeyBoardButton("Tekshirish ✅", "", "check"))
         );
 
         $keyb = $telegram->buildInlineKeyBoard($option);
