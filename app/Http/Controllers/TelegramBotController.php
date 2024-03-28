@@ -9,7 +9,6 @@ class TelegramBotController extends Controller
     public function start()
     {
         $telegram = new Telegram(env('TELEGRAM_BOT_TOKEN'));
-//        $result = $telegram->getData();
         $chat_id = $telegram->ChatID();
         $user_id = $telegram->UserID();
         $callback_query = $telegram->Callback_Query();
@@ -20,9 +19,16 @@ class TelegramBotController extends Controller
                 $result1 = $telegram->getChatMember($content1);
                 $content2 = ["chat_id" => "-1001987932786", "user_id" => $user_id];
                 $result2 = $telegram->getChatMember($content2);
-                $telegram->sendMessage(['chat_id' => $chat_id, 'text' => json_encode([$result1, $result2])]);
-                exit();
-//                $this->error($telegram, $chat_id);
+
+                if ($result1['ok'] && $result2['ok']) {
+                    if ($result1['result']['status'] == "member" && $result2['result']['status'] == "member") {
+                        $telegram->sendMessage(['chat_id' => $chat_id, 'text' => "Xush kelibsiz! Botdan to'liq foydalanishingiz mumkin!"]);
+                    } else {
+                        $this->error($telegram, $chat_id);
+                    }
+                } else {
+                    $this->error($telegram, $chat_id);
+                }
             }
         } else {
             $this->error($telegram, $chat_id);
