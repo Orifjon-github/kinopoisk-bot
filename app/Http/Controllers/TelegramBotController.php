@@ -9,10 +9,12 @@ class TelegramBotController extends Controller
     public function start()
     {
         $telegram = new Telegram(env('TELEGRAM_BOT_TOKEN'));
-        $result = $telegram->getData();
+//        $result = $telegram->getData();
         $chat_id = $telegram->ChatID();
         $user_id = $telegram->UserID();
 
+        $result = $telegram->sendMessage(['chat_id' => 'https://t.me/eudhdhdhdhdhddh', 'text' => '1212']);
+        $telegram->sendMessage(['chat_id' => $chat_id, 'text' => json_encode($result, JSON_UNESCAPED_UNICODE)]);
         $callback_query = $telegram->Callback_Query();
         if (!empty($callback_query)) {
             $callback_data = $telegram->Callback_Data();
