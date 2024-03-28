@@ -13,7 +13,7 @@ class TelegramBotController extends Controller
         $chat_id = $telegram->ChatID();
         $user_id = $telegram->UserID();
 
-        $result = $telegram->sendMessage(['chat_id' => 'https://t.me/eudhdhdhdhdhddh', 'text' => '1212']);
+        $result = $telegram->sendMessage(['chat_id' => 't.me/eudhdhdhdhdhddh', 'text' => '1212']);
         $telegram->sendMessage(['chat_id' => $chat_id, 'text' => json_encode($result, JSON_UNESCAPED_UNICODE)]);
         $callback_query = $telegram->Callback_Query();
         if (!empty($callback_query)) {
