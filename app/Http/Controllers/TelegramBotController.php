@@ -35,6 +35,7 @@ class TelegramBotController extends Controller
                         $lastMovie->code = $data['message']['text'];
                         $lastMovie->save();
                         $telegram->sendMessage(['chat_id' => $chat_id, 'text' => "Kino muvafaqqiyatli saqlandi ✅. Foydalanuvchi sifatida tekshirib ko'rishingiz mumkin! (Admin uchun bot boshqacha ishlaydi)"]);
+                        exit();
                     }
                 }
                 $telegram->sendMessage(['chat_id' => $chat_id, 'text' => "Video yubormadingiz ❌"]);
