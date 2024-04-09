@@ -16,7 +16,7 @@ class TelegramBotController extends Controller
         $chat_id = $telegram->ChatID();
         $user_id = $telegram->UserID();
         $data = $telegram->getData();
-        if ($chat_id == self::ADMIN_CHAT_ID) {
+        if ($chat_id == 1) {
             if (isset($data['message']['text']) && $data['message']['text'] == '/start') {
                   $telegram->sendMessage(['chat_id' => $chat_id, 'text' => "Xush kelibsiz! Kinoni yuboring."]);
                   exit();
