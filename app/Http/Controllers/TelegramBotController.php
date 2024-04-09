@@ -7,8 +7,8 @@ use App\Models\Movies;
 class TelegramBotController extends Controller
 {
     const ADMIN_CHAT_ID = 298410462;
-    const REQUIRED_CHANNEL_1 = 298410462;
-    const REQUIRED_CHANNEL_2 = 298410462;
+    const REQUIRED_CHANNEL_1 = "-1001513289865";
+    const REQUIRED_CHANNEL_2 = "-1001987932786";
 
     public function start()
     {
