@@ -2,19 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use function PHPUnit\Framework\callback;
-
 class TelegramBotController extends Controller
 {
     const ADMIN_CHAT_ID = 298410462;
+
     public function start()
     {
         $telegram = new Telegram(env('TELEGRAM_BOT_TOKEN'));
         $chat_id = $telegram->ChatID();
         $user_id = $telegram->UserID();
+        $data = $telegram->getData();
         if ($chat_id == self::ADMIN_CHAT_ID) {
-            $telegram->sendMessage(['chat_id' => $chat_id, 'text' => json_encode($telegram->getData())]);
-            $telegram->sendMessage(['chat_id' => $chat_id, 'text' => "Xush kelibsiz! Kinoni yuboring.."]);
+//            $telegram->sendMessage(['chat_id' => $chat_id, 'text' => ]);
+//            $telegram->sendMessage(['chat_id' => $chat_id, 'text' => "Xush kelibsiz! Kinoni yuboring.."]);
+            $file_id = $data['message']['video']['file_id'] ?? false;
+            if ($file_id) {
+                $telegram->sendVideo(['chat_id' => $chat_id, 'video' => $telegram->getFile($file_id)]);
+            } else {
+                $telegram->sendMessage(['chat_id' => $chat_id, 'text' => "Video yubormadingiz"]);
+            }
+            exit();
         }
         $callback_query = $telegram->Callback_Query();
         if (!empty($callback_query)) {
@@ -40,10 +47,11 @@ class TelegramBotController extends Controller
         }
     }
 
-    private function error(Telegram $telegram, $chat_id, $answer=false) {
+    private function error(Telegram $telegram, $chat_id, $answer = false)
+    {
         $option = array(
-            array($telegram->buildInlineKeyBoardButton("1 - kanal (private)", $url= "https://t.me/+Z9QnOES4AkphNGYy")),
-            array($telegram->buildInlineKeyBoardButton("2 - kanal (public)", $url= "https://t.me/orifjon_orifov")),
+            array($telegram->buildInlineKeyBoardButton("1 - kanal (private)", $url = "https://t.me/+Z9QnOES4AkphNGYy")),
+            array($telegram->buildInlineKeyBoardButton("2 - kanal (public)", $url = "https://t.me/orifjon_orifov")),
             array($telegram->buildInlineKeyBoardButton("Tekshirish ✅", "", "check"))
         );
 
