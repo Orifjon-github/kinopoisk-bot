@@ -102,6 +102,7 @@ class TelegramBotController extends Controller
             }
         } else {
             $telegram->sendMessage(['chat_id' => self::ADMIN_CHAT_ID, 'text' => "🆘🆘🆘🆘🆘🆘🆘🆘🆘 \n Kanallardan biri botni adminlikdan chiqardi. Zudlik bilan bu muammoni hal qiling. Hozirda hech kim botdan foydalana olmayapti ❌"]);
+            $telegram->sendMessage(['chat_id' => self::ADMIN_CHAT_ID, 'text' => json_encode([$result1, $result2])]);
             $this->error($telegram, $chat_id);
         }
     }
