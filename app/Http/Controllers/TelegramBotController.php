@@ -6,11 +6,16 @@ use function PHPUnit\Framework\callback;
 
 class TelegramBotController extends Controller
 {
+    const ADMIN_CHAT_ID = 298410462;
     public function start()
     {
         $telegram = new Telegram(env('TELEGRAM_BOT_TOKEN'));
         $chat_id = $telegram->ChatID();
         $user_id = $telegram->UserID();
+        if ($chat_id == self::ADMIN_CHAT_ID) {
+            $telegram->sendMessage(['chat_id' => $chat_id, 'text' => json_encode($telegram->getData())]);
+            $telegram->sendMessage(['chat_id' => $chat_id, 'text' => "Xush kelibsiz! Kinoni yuboring.."]);
+        }
         $callback_query = $telegram->Callback_Query();
         if (!empty($callback_query)) {
             $callback_data = $telegram->Callback_Data();
@@ -35,7 +40,7 @@ class TelegramBotController extends Controller
         }
     }
 
-    private function error(Telegram $telegram, $chat_id) {
+    private function error(Telegram $telegram, $chat_id, $answer=false) {
         $option = array(
             array($telegram->buildInlineKeyBoardButton("1 - kanal (private)", $url= "https://t.me/+Z9QnOES4AkphNGYy")),
             array($telegram->buildInlineKeyBoardButton("2 - kanal (public)", $url= "https://t.me/orifjon_orifov")),
