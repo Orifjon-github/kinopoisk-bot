@@ -99,6 +99,7 @@ class TelegramBotController extends Controller
                 $this->error($telegram, $chat_id);
             }
         } else {
+            $telegram->sendMessage(['chat_id' => self::ADMIN_CHAT_ID, 'text' => "🆘🆘🆘🆘🆘🆘🆘🆘🆘 \n Kanallardan biri botni adminlikdan chiqardi. Zudlik bilan bu muammoni hal qiling. Hozirda hech kim botdan foydalana olmayapti ❌"]);
             $this->error($telegram, $chat_id);
         }
     }
