@@ -17,7 +17,7 @@ class TelegramBotController extends Controller
 //            $telegram->sendMessage(['chat_id' => $chat_id, 'text' => "Xush kelibsiz! Kinoni yuboring.."]);
             $file_id = $data['message']['video']['file_id'] ?? false;
             if ($file_id) {
-                $telegram->sendVideo(['chat_id' => $chat_id, 'video' => $telegram->getFile($file_id)]);
+                $telegram->sendVideo(['chat_id' => $chat_id, 'video' => $file_id]);
             } else {
                 $telegram->sendMessage(['chat_id' => $chat_id, 'text' => "Video yubormadingiz"]);
             }
