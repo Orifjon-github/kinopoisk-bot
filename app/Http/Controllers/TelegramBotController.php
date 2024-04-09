@@ -12,11 +12,15 @@ class TelegramBotController extends Controller
         $chat_id = $telegram->ChatID();
         $user_id = $telegram->UserID();
         $data = $telegram->getData();
+//        $message =
         if ($chat_id == self::ADMIN_CHAT_ID) {
-//            $telegram->sendMessage(['chat_id' => $chat_id, 'text' => ]);
+            $telegram->sendMessage(['chat_id' => $chat_id, 'text' => json_encode($data)]);
+//            if ()
+            exit();
 //            $telegram->sendMessage(['chat_id' => $chat_id, 'text' => "Xush kelibsiz! Kinoni yuboring.."]);
             $file_id = $data['message']['video']['file_id'] ?? false;
             if ($file_id) {
+
                 $telegram->sendVideo(['chat_id' => $chat_id, 'video' => $file_id]);
             } else {
                 $telegram->sendMessage(['chat_id' => $chat_id, 'text' => "Video yubormadingiz"]);
