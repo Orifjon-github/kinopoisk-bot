@@ -7,6 +7,8 @@ use App\Models\Movies;
 class TelegramBotController extends Controller
 {
     const ADMIN_CHAT_ID = 298410462;
+    const REQUIRED_CHANNEL_1 = 298410462;
+    const REQUIRED_CHANNEL_2 = 298410462;
 
     public function start()
     {
@@ -87,9 +89,9 @@ class TelegramBotController extends Controller
     }
 
     private function check(Telegram $telegram, $chat_id, $user_id) {
-        $content1 = ["chat_id" => "-1001513289865", "user_id" => $user_id];
+        $content1 = ["chat_id" => self::REQUIRED_CHANNEL_1, "user_id" => $user_id];
         $result1 = $telegram->getChatMember($content1);
-        $content2 = ["chat_id" => "-1001987932786", "user_id" => $user_id];
+        $content2 = ["chat_id" => self::REQUIRED_CHANNEL_2, "user_id" => $user_id];
         $result2 = $telegram->getChatMember($content2);
 
         if ($result1['ok'] && $result2['ok']) {
