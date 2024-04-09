@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Movies;
+
 class TelegramBotController extends Controller
 {
     const ADMIN_CHAT_ID = 298410462;
@@ -12,18 +14,29 @@ class TelegramBotController extends Controller
         $chat_id = $telegram->ChatID();
         $user_id = $telegram->UserID();
         $data = $telegram->getData();
-//        $message =
         if ($chat_id == self::ADMIN_CHAT_ID) {
-            $telegram->sendMessage(['chat_id' => $chat_id, 'text' => json_encode($data)]);
-//            if ()
-            exit();
-//            $telegram->sendMessage(['chat_id' => $chat_id, 'text' => "Xush kelibsiz! Kinoni yuboring.."]);
+            if (isset($data['message']['text']) && $data['message']['text'] == '/start') {
+                  $telegram->sendMessage(['chat_id' => $chat_id, 'text' => "Xush kelibsiz! Kinoni yuboring."]);
+            }
+//            $telegram->sendMessage(['chat_id' => $chat_id, 'text' => json_encode($data)]);
             $file_id = $data['message']['video']['file_id'] ?? false;
             if ($file_id) {
-
-                $telegram->sendVideo(['chat_id' => $chat_id, 'video' => $file_id]);
+                $movie = new Movies();
+                $movie->file_id = $file_id;
+                $movie->caption = $data['message']['caption'] ?? '';
+                $movie->code = 'pending';
+                $movie->save();
+                $telegram->sendMessage(['chat_id' => $chat_id, 'text' => "Ushbu kino uchun kodni yuboring! (Faqat 1000 dan katta bo'lmagan raqamlarda)"]);
             } else {
-                $telegram->sendMessage(['chat_id' => $chat_id, 'text' => "Video yubormadingiz"]);
+                if (isset($data['message']['text']) && $data['message']['text'] < 1000) {
+                    $lastMovie = Movies::latest()->first() ?? null;
+                    if ($lastMovie && $lastMovie->code == 'pending') {
+                        $lastMovie->code = $data['message']['text'];
+                        $lastMovie->save();
+                        $telegram->sendMessage(['chat_id' => $chat_id, 'text' => "Kino muvafaqqiyatli saqlandi ✅. Foydalanuvchi sifatida tekshirib ko'rishingiz mumkin! (Admin uchun bot boshqacha ishlaydi)"]);
+                    }
+                }
+                $telegram->sendMessage(['chat_id' => $chat_id, 'text' => "Video yubormadingiz ❌"]);
             }
             exit();
         }

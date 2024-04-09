@@ -18,7 +18,7 @@ return new class extends Migration
             $table->text('name')->nullable();
             $table->text('file_id')->nullable();
             $table->text('caption')->nullable();
-            $table->text('seo')->nullable();
+            $table->text('code')->nullable();
             $table->timestamps();
         });
     }
