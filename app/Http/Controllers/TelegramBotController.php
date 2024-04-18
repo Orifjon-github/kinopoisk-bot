@@ -8,9 +8,9 @@ use App\Models\User;
 
 class TelegramBotController extends Controller
 {
-    const ADMIN_CHAT_ID = 298410462;
-    const REQUIRED_CHANNEL_1 = "-1001513289865";
-    const REQUIRED_CHANNEL_2 = "-1001987932786";
+    public function __construct() {
+        $this->admin = env('ADMIN_CHAT_ID', 298410462);
+    }
 
     public function start()
     {
@@ -18,7 +18,7 @@ class TelegramBotController extends Controller
         $chat_id = $telegram->ChatID();
         $user_id = $telegram->UserID();
         $data = $telegram->getData();
-        if ($chat_id == self::ADMIN_CHAT_ID) {
+        if ($chat_id == $this->admin) {
             if (isset($data['message']['text']) && $data['message']['text'] == '/start') {
                   $telegram->sendMessage(['chat_id' => $chat_id, 'text' => "Xush kelibsiz! Kinoni yuboring."]);
                   exit();
@@ -108,12 +108,12 @@ class TelegramBotController extends Controller
                 } elseif ($result['result']['status'] == 'left') {
                     $this->error($telegram, $chat_id);
                 } else {
-                    $telegram->sendMessage(['chat_id' => self::ADMIN_CHAT_ID, 'text' => 'New status: ' . $result['result']['status']]);
+                    $telegram->sendMessage(['chat_id' => $this->admin, 'text' => 'New status: ' . $result['result']['status']]);
                     $this->error($telegram, $chat_id);
                 }
             } else {
-                $telegram->sendMessage(['chat_id' => self::ADMIN_CHAT_ID, 'text' => "🆘🆘🆘🆘🆘🆘🆘🆘🆘 \n Kanal botni adminlikdan chiqargan bo'lishi mumkin. Zudlik bilan bu muammoni hal qiling. Hozirda hech kim botdan foydalana olmayapti ❌ \n\n Channel ID: " . $channel->id . "\n" . "Channel link: " . $channel->link]);
-                $telegram->sendMessage(['chat_id' => self::ADMIN_CHAT_ID, 'text' => json_encode($result)]);
+                $telegram->sendMessage(['chat_id' => $this->admin, 'text' => "🆘🆘🆘🆘🆘🆘🆘🆘🆘 \n Kanal botni adminlikdan chiqargan bo'lishi mumkin. Zudlik bilan bu muammoni hal qiling. Hozirda hech kim botdan foydalana olmayapti ❌ \n\n Channel ID: " . $channel->id . "\n" . "Channel link: " . $channel->link]);
+                $telegram->sendMessage(['chat_id' => $this->admin, 'text' => json_encode($result)]);
                 $this->error($telegram, $chat_id);
             }
         }
