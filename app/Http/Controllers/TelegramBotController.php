@@ -48,11 +48,14 @@ class TelegramBotController extends Controller
         }
 
         if (isset($data['message']['text']) && $data['message']['text'] == '/start') {
-            $user = new User();
-            $user->name = $data['message']['from']['first_name'] ?? null;
-            $user->chat_id = $data['message']['from']['id'] ?? null;
-            $user->username = $data['message']['from']['username'] ?? null;
-            $user->save();
+            $user = User::where('chat_id', $data['message']['from']['id'])->first() ?? null;
+            if (!$user) {
+                $user = new User();
+                $user->name = $data['message']['from']['first_name'] ?? null;
+                $user->chat_id = $data['message']['from']['id'] ?? null;
+                $user->username = $data['message']['from']['username'] ?? null;
+                $user->save();
+            }
             if ($this->check($telegram, $chat_id, $user_id)) {
                 $telegram->sendMessage(['chat_id' => $chat_id, 'text' => "Xush kelibsiz! Botdan to'liq foydalanishingiz mumkin! Kino kodini yuboring!"]);
                 exit();
