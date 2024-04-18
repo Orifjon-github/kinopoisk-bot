@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Channel;
 use App\Models\Movies;
+use App\Models\User;
 
 class TelegramBotController extends Controller
 {
@@ -16,8 +18,6 @@ class TelegramBotController extends Controller
         $chat_id = $telegram->ChatID();
         $user_id = $telegram->UserID();
         $data = $telegram->getData();
-        $telegram->sendMessage(['chat_id' => $chat_id, 'text' => json_encode($data, JSON_UNESCAPED_UNICODE)]);
-        exit();
         if ($chat_id == self::ADMIN_CHAT_ID) {
             if (isset($data['message']['text']) && $data['message']['text'] == '/start') {
                   $telegram->sendMessage(['chat_id' => $chat_id, 'text' => "Xush kelibsiz! Kinoni yuboring."]);
@@ -48,6 +48,11 @@ class TelegramBotController extends Controller
         }
 
         if (isset($data['message']['text']) && $data['message']['text'] == '/start') {
+            $user = new User();
+            $user->name = $data['message']['from']['first_name'] ?? null;
+            $user->chat_id = $data['message']['from']['id'] ?? null;
+            $user->username = $data['message']['from']['username'] ?? null;
+            $user->save();
             if ($this->check($telegram, $chat_id, $user_id)) {
                 $telegram->sendMessage(['chat_id' => $chat_id, 'text' => "Xush kelibsiz! Botdan to'liq foydalanishingiz mumkin! Kino kodini yuboring!"]);
                 exit();
@@ -67,7 +72,9 @@ class TelegramBotController extends Controller
             if ($this->check($telegram, $chat_id, $user_id)) {
                 $movie = Movies::where('code', $data['message']['text'])->first() ?? null;
                 if ($movie) {
-                    $telegram->sendVideo(['chat_id' => $chat_id, 'video' => $movie->file_id, 'caption' => $movie->caption]);
+                    $movie->count = (int)$movie->count + 1;
+                    $movie->save();
+                    $telegram->sendVideo(['chat_id' => $chat_id, 'video' => $movie->file_id, 'caption' => $movie->caption . "\n\n Yuklab olishlar soni: " . $movie->count]);
                 } else {
                     $telegram->sendMessage(['chat_id' => $chat_id, 'text' => "Ushbu kod bo'yicha hech qanday kino topilmadi ❌"]);
                 }
@@ -78,12 +85,12 @@ class TelegramBotController extends Controller
 
     private function error(Telegram $telegram, $chat_id, $answer = false)
     {
-        $option = array(
-            array($telegram->buildInlineKeyBoardButton("1 - kanal", $url = "https://t.me/+Z9QnOES4AkphNGYy")),
-            array($telegram->buildInlineKeyBoardButton("2 - kanal", $url = "https://t.me/orifjon_orifov")),
-            array($telegram->buildInlineKeyBoardButton("Tekshirish ✅", "", "check"))
-        );
-
+        $option = [];
+        $channels = Channel::all();
+        foreach ($channels as $channel) {
+            $option[] = array($telegram->buildInlineKeyBoardButton($channel->name, $channel->link));
+        }
+        $option[] =  array($telegram->buildInlineKeyBoardButton("Tekshirish ✅", "", "check"));
         $keyb = $telegram->buildInlineKeyBoard($option);
         $content = array('chat_id' => $chat_id, 'reply_markup' => $keyb, 'text' => "❌ Kechirasiz botimizdan foydalanishdan oldin ushbu kanallarga a'zo bo'lishingiz kerak.");
         $telegram->sendMessage($content);
@@ -91,21 +98,25 @@ class TelegramBotController extends Controller
     }
 
     private function check(Telegram $telegram, $chat_id, $user_id) {
-        $content1 = ["chat_id" => self::REQUIRED_CHANNEL_1, "user_id" => $user_id];
-        $result1 = $telegram->getChatMember($content1);
-        $content2 = ["chat_id" => self::REQUIRED_CHANNEL_2, "user_id" => $user_id];
-        $result2 = $telegram->getChatMember($content2);
-
-        if ($result1['ok'] && $result2['ok']) {
-            if ($result1['result']['status'] == "member" && $result2['result']['status'] == "member") {
-                return true;
+        $channels = Channel::all();
+        foreach ($channels as $channel) {
+            $content = ["chat_id" => $channel->chat_id, "user_id" => $user_id];
+            $result = $telegram->getChatMember($content);
+            if ($result['ok']) {
+                if (in_array($result['result']['status'], ['member', 'creator', 'administrator'])) {
+                    return true;
+                } elseif ($result['result']['status'] == 'left') {
+                    $this->error($telegram, $chat_id);
+                } else {
+                    $telegram->sendMessage(['chat_id' => self::ADMIN_CHAT_ID, 'text' => 'New status: ' . $result['result']['status']]);
+                    $this->error($telegram, $chat_id);
+                }
             } else {
+                $telegram->sendMessage(['chat_id' => self::ADMIN_CHAT_ID, 'text' => "🆘🆘🆘🆘🆘🆘🆘🆘🆘 \n Kanal botni adminlikdan chiqargan bo'lishi mumkin. Zudlik bilan bu muammoni hal qiling. Hozirda hech kim botdan foydalana olmayapti ❌ \n\n Channel ID: " . $channel->id . "\n" . "Channel link: " . $channel->link]);
+                $telegram->sendMessage(['chat_id' => self::ADMIN_CHAT_ID, 'text' => json_encode($result)]);
                 $this->error($telegram, $chat_id);
             }
-        } else {
-            $telegram->sendMessage(['chat_id' => self::ADMIN_CHAT_ID, 'text' => "🆘🆘🆘🆘🆘🆘🆘🆘🆘 \n Kanallardan biri botni adminlikdan chiqardi. Zudlik bilan bu muammoni hal qiling. Hozirda hech kim botdan foydalana olmayapti ❌"]);
-            $telegram->sendMessage(['chat_id' => self::ADMIN_CHAT_ID, 'text' => json_encode([$result1, $result2])]);
-            $this->error($telegram, $chat_id);
         }
+        return false;
     }
 }

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('file_id')->nullable();
             $table->text('caption')->nullable();
             $table->text('code')->nullable();
+            $table->integer('count')->default(0);
             $table->timestamps();
         });
     }
