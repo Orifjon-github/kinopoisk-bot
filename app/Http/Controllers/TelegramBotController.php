@@ -105,6 +105,7 @@ class TelegramBotController extends Controller
         foreach ($channels as $channel) {
             $content = ["chat_id" => $channel->chat_id, "user_id" => $user_id];
             $result = $telegram->getChatMember($content);
+            $telegram->sendMessage(['chat_id' => $this->admin, 'text' => json_encode($result, JSON_UNESCAPED_UNICODE)]);
             if ($result['ok']) {
                 if (in_array($result['result']['status'], ['member', 'creator', 'administrator'])) {
                     return true;
